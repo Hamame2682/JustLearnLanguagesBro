@@ -711,29 +711,34 @@ def save_to_supabase(new_words, lesson_num, user_id: str):
     解析した単語データをSupabaseに保存（ユーザーID付き）
     フォールバック: ローカルJSON
     """
-    data_to_insert = []
-    for word in new_words:
-        data_to_insert.append({
-            "user_id": user_id,
-            "lesson": lesson_num,
-            "word": word.get("word", ""),
-            "pinyin": word.get("pinyin", ""),
-            "meaning": word.get("meaning", ""),
-            "correct_count": 0,
-            "miss_count": 0,
-            "last_reviewed": None
-        })
-    
-    if supabase:
-        try:
-            response = supabase.table("words").insert(data_to_insert).execute()
-            print(f"💾 {len(new_words)}個の単語をSupabaseに保存したで！（ユーザー: {user_id}）")
-            return
-        except Exception as e:
-            print(f"⚠️ Supabase保存エラー: {e}")
-            print("💡 ローカルJSONにフォールバックします")
-            # フォールバック: JSON
-            pass
+    if not supabase:
+        print("⚠️ Supabaseが設定されていません。ローカルJSONに保存します。")
+        # フォールバック処理に進む
+    else:
+        data_to_insert = []
+        for word in new_words:
+            data_to_insert.append({
+                "user_id": user_id,
+                "lesson": lesson_num,
+                "word": word.get("word", ""),
+                "pinyin": word.get("pinyin", ""),
+                "meaning": word.get("meaning", ""),
+                "correct_count": 0,
+                "miss_count": 0,
+                "last_reviewed": None
+            })
+        
+        if data_to_insert:
+            try:
+                response = supabase.table("words").insert(data_to_insert).execute()
+                print(f"✅ User {user_id} の単語 {len(new_words)}個をSupabaseに保存したで！")
+                return
+            except Exception as e:
+                print(f"❌ Supabase保存エラー: {e}")
+                traceback.print_exc()
+                print("💡 ローカルJSONにフォールバックします")
+                # フォールバック: JSON
+                pass
     
     # フォールバック: ローカルJSON
     if not os.path.exists(DB_FILE):
@@ -772,27 +777,32 @@ def save_grammar_to_supabase(new_grammar, lesson_num, user_id: str):
     解析した文法データをSupabaseに保存（ユーザーID付き）
     フォールバック: ローカルJSON
     """
-    data_to_insert = []
-    for item in new_grammar:
-        data_to_insert.append({
-            "user_id": user_id,
-            "lesson": lesson_num,
-            "title": item.get("title", "無題"),
-            "description": item.get("description", ""),
-            "example_cn": item.get("example_cn", ""),
-            "example_jp": item.get("example_jp", "")
-        })
-    
-    if supabase:
-        try:
-            response = supabase.table("grammar").insert(data_to_insert).execute()
-            print(f"💾 文法 {len(new_grammar)}個をSupabaseに保存したで！（ユーザー: {user_id}）")
-            return
-        except Exception as e:
-            print(f"⚠️ Supabase保存エラー: {e}")
-            print("💡 ローカルJSONにフォールバックします")
-            # フォールバック: JSON
-            pass
+    if not supabase:
+        print("⚠️ Supabaseが設定されていません。ローカルJSONに保存します。")
+        # フォールバック処理に進む
+    else:
+        data_to_insert = []
+        for item in new_grammar:
+            data_to_insert.append({
+                "user_id": user_id,
+                "lesson": lesson_num,
+                "title": item.get("title", "無題"),
+                "description": item.get("description", ""),
+                "example_cn": item.get("example_cn", ""),
+                "example_jp": item.get("example_jp", "")
+            })
+        
+        if data_to_insert:
+            try:
+                response = supabase.table("grammar").insert(data_to_insert).execute()
+                print(f"✅ User {user_id} の文法 {len(new_grammar)}個をSupabaseに保存したで！")
+                return
+            except Exception as e:
+                print(f"❌ Supabase保存エラー(文法): {e}")
+                traceback.print_exc()
+                print("💡 ローカルJSONにフォールバックします")
+                # フォールバック: JSON
+                pass
     
     # フォールバック: ローカルJSON
     if not os.path.exists(GRAMMAR_DB_FILE):
@@ -835,7 +845,7 @@ async def upload_textbook(
     type: 'word' または 'grammar' で処理を分岐
     ログイン済みユーザーなら誰でも自分のデータをアップロード可能
     """
-    print(f"\n📩 画像受信: {type}モード, 第{lesson}課", flush=True)
+    print(f"\n📂 アップロード開始: User={current_user}, Lesson={lesson}, Type={type}", flush=True)
     
     try:
         # 1. APIキーの確認

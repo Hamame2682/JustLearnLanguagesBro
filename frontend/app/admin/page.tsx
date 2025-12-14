@@ -56,7 +56,7 @@ export default function AdminPage() {
 
       const apiUrl = getApiUrl();
       
-      const response = await fetch(`${apiUrl}/api/admin/upload-textbook`, {
+      const response = await fetch(`${apiUrl}/api/upload-textbook`, {
         method: 'POST',
         body: formData, // Content-Typeは自動で設定されるので、手動で設定しない！
       });
