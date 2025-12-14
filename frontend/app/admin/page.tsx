@@ -55,9 +55,11 @@ export default function AdminPage() {
       formData.append('type', uploadType);
 
       const apiUrl = getApiUrl();
+      const headers = getAuthHeaders();
       
       const response = await fetch(`${apiUrl}/api/upload-textbook`, {
         method: 'POST',
+        headers: headers, // 認証ヘッダーを追加
         body: formData, // Content-Typeは自動で設定されるので、手動で設定しない！
       });
 
