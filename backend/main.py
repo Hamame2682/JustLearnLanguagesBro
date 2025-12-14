@@ -823,16 +823,17 @@ def save_grammar_to_supabase(new_grammar, lesson_num, user_id: str):
     print(f"💾 文法 {len(new_grammar)}個を grammar.json に保存したで！（ユーザー: {user_id}）")
 
 
-@app.post("/api/admin/upload-textbook")
+@app.post("/api/upload-textbook")
 async def upload_textbook(
     file: UploadFile = File(...),
     lesson: int = Form(...),
     type: str = Form("word"),  # ★ここ重要！ 'word' か 'grammar' が来る（デフォルトは'word'）
-    current_user: str = Depends(get_current_user)  # 認証必須
+    current_user: str = Depends(get_current_user)  # 認証必須（管理者チェックなし、ログイン済みなら誰でもOK）
 ):
     """
-    教科書画像をアップロードし、Gemini Visionで解析して保存
+    教科書画像をアップロードし、Gemini Visionで解析して保存（個人用）
     type: 'word' または 'grammar' で処理を分岐
+    ログイン済みユーザーなら誰でも自分のデータをアップロード可能
     """
     print(f"\n📩 画像受信: {type}モード, 第{lesson}課", flush=True)
     

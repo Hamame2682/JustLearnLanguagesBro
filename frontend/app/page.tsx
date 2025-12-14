@@ -54,18 +54,25 @@ export default function Home() {
             <p>手書き・並べ替え・作文の問題に挑戦</p>
           </Link>
           
-          <Link href="/admin" className={styles.menuItem}>
-            <div className={styles.menuIcon}>⚙️</div>
-            <h2>管理画面</h2>
-            <p>教科書をアップロードしてデータを追加</p>
+          <Link href="/upload" className={styles.menuItem}>
+            <div className={styles.menuIcon}>📸</div>
+            <h2>教材を追加</h2>
+            <p>教科書を撮影して自分だけの単語帳を作成</p>
           </Link>
           
           {user?.is_admin && (
-            <Link href="/admin/users" className={styles.menuItem}>
-              <div className={styles.menuIcon}>👥</div>
-              <h2>ユーザー管理</h2>
-              <p>ユーザー一覧と権限管理</p>
-            </Link>
+            <>
+              <Link href="/admin" className={styles.menuItem}>
+                <div className={styles.menuIcon}>⚙️</div>
+                <h2>管理画面</h2>
+                <p>管理者用の設定と操作</p>
+              </Link>
+              <Link href="/admin/users" className={styles.menuItem}>
+                <div className={styles.menuIcon}>👥</div>
+                <h2>ユーザー管理</h2>
+                <p>ユーザー一覧と権限管理</p>
+              </Link>
+            </>
           )}
         </div>
       </div>
