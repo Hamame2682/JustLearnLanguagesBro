@@ -1,0 +1,140 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.questionDisplay {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  padding: 1.5rem;
+  background: #f0f7ff;
+  border-radius: 12px;
+}
+
+.pinyinText {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #0066cc;
+  margin: 0 0 0.5rem 0;
+  font-family: 'Courier New', monospace;
+  letter-spacing: 0.1em;
+}
+
+.meaningText {
+  font-size: 1.2rem;
+  color: #333;
+  font-weight: 500;
+  margin: 0.5rem 0;
+}
+
+.hintText {
+  font-size: 0.9rem;
+  color: #999;
+  margin: 0.5rem 0 0 0;
+  font-style: italic;
+}
+
+.canvasWrapper {
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  padding: 1rem;
+  background: white;
+  display: flex;
+  justify-content: center;
+}
+
+.controls {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.clearButton,
+.submitButton {
+  padding: 0.75rem 2rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.clearButton {
+  background: #f0f0f0;
+  color: #333;
+}
+
+.clearButton:hover {
+  background: #e0e0e0;
+}
+
+.submitButton {
+  background: #0066cc;
+  color: white;
+}
+
+.submitButton:hover:not(:disabled) {
+  background: #0052a3;
+}
+
+.submitButton:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.result {
+  margin-top: 1rem;
+  padding: 1.5rem;
+  background: #f9f9f9;
+  border-radius: 8px;
+  border-left: 4px solid #0066cc;
+}
+
+.result h3 {
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.feedback {
+  color: #666;
+  line-height: 1.6;
+}
+
+.error {
+  color: #d32f2f;
+}
+
+.nextButton {
+  margin-top: 1rem;
+  padding: 0.75rem 2rem;
+  background: #0066cc;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s;
+  width: 100%;
+}
+
+.nextButton:hover {
+  background: #0052a3;
+  transform: translateY(-2px);
+}
+
+.nextButton:active {
+  transform: translateY(0);
+}
+
+.backgroundModeIndicator {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: #fff3cd;
+  border-radius: 8px;
+  text-align: center;
+  color: #856404;
+  font-weight: bold;
+}
+

@@ -1,0 +1,225 @@
+.container {
+  min-height: 100vh;
+  padding: 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #ddd;
+}
+
+.backLink {
+  color: #0066cc;
+  text-decoration: none;
+  font-size: 0.9rem;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+}
+
+.backLink:hover {
+  background-color: #f0f0f0;
+}
+
+.title {
+  font-size: 1.5rem;
+  color: #333;
+  margin: 0;
+}
+
+.error {
+  padding: 1rem;
+  background: #ffebee;
+  border-left: 4px solid #f44336;
+  border-radius: 4px;
+  color: #c62828;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.message {
+  padding: 1rem;
+  background: #e8f5e9;
+  border-left: 4px solid #2e7d32;
+  border-radius: 4px;
+  color: #2e7d32;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.userList {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.userListHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.userListHeader h2 {
+  margin: 0;
+  color: #333;
+  font-size: 1.25rem;
+}
+
+.refreshButton {
+  padding: 0.5rem 1rem;
+  background: #0066cc;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s;
+}
+
+.refreshButton:hover {
+  background: #0052a3;
+}
+
+.emptyMessage {
+  text-align: center;
+  padding: 3rem;
+  color: #666;
+  font-size: 1.1rem;
+}
+
+.userTable {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.userRowHeader {
+  display: grid;
+  grid-template-columns: 2fr 1fr 2fr 2fr;
+  gap: 1rem;
+  padding: 1rem;
+  background: #f5f5f5;
+  border-radius: 8px;
+  font-weight: bold;
+  color: #333;
+}
+
+.userRow {
+  display: grid;
+  grid-template-columns: 2fr 1fr 2fr 2fr;
+  gap: 1rem;
+  padding: 1rem;
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  align-items: center;
+  transition: box-shadow 0.2s;
+}
+
+.userRow:hover {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.userCell {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.currentUserBadge {
+  font-size: 0.85rem;
+  color: #0066cc;
+  font-weight: normal;
+}
+
+.adminBadge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  background: #ff9800;
+  color: white;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: bold;
+}
+
+.userBadge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  background: #e0e0e0;
+  color: #666;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: bold;
+}
+
+.actionButtons {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.actionButton {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: bold;
+  transition: all 0.2s;
+}
+
+.toggleButton {
+  background: #ff9800;
+  color: white;
+}
+
+.toggleButton:hover {
+  background: #f57c00;
+  transform: translateY(-1px);
+}
+
+.deleteButton {
+  background: #f44336;
+  color: white;
+}
+
+.deleteButton:hover {
+  background: #d32f2f;
+  transform: translateY(-1px);
+}
+
+.noActionText {
+  color: #999;
+  font-size: 0.85rem;
+  font-style: italic;
+}
+
+@media (max-width: 768px) {
+  .userRowHeader,
+  .userRow {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+
+  .userCell {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .actionButtons {
+    width: 100%;
+  }
+
+  .actionButton {
+    flex: 1;
+  }
+}
+

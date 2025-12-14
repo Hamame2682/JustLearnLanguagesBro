@@ -1,0 +1,107 @@
+.main {
+  min-height: 100vh;
+  padding: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.container {
+  max-width: 600px;
+  width: 100%;
+  text-align: center;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin: 0;
+  color: #333;
+}
+
+.userInfo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 0.9rem;
+}
+
+.studentId {
+  color: #666;
+  font-weight: 500;
+}
+
+.adminBadge {
+  background: #f57c00;
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: bold;
+}
+
+.logoutButton {
+  background: #e0e0e0;
+  color: #333;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.logoutButton:hover {
+  background: #d0d0d0;
+}
+
+.description {
+  font-size: 1.1rem;
+  color: #666;
+  margin-bottom: 3rem;
+}
+
+.menu {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.menuItem {
+  display: block;
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.menuItem:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.menuIcon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.menuItem h2 {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.menuItem p {
+  color: #666;
+  font-size: 0.9rem;
+}
+

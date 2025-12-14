@@ -1,0 +1,140 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.meaningDisplay {
+  text-align: center;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background: #e3f2fd;
+  border-radius: 8px;
+}
+
+.meaningText {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #1976d2;
+  margin: 0;
+}
+
+.wordsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.section {
+  background: #f9f9f9;
+  padding: 1.5rem;
+  border-radius: 8px;
+}
+
+.section h3 {
+  margin-bottom: 1rem;
+  color: #333;
+  font-size: 1.1rem;
+}
+
+.wordList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  min-height: 60px;
+}
+
+.empty {
+  color: #999;
+  font-style: italic;
+}
+
+.wordButton {
+  padding: 0.75rem 1.5rem;
+  background: white;
+  border: 2px solid #0066cc;
+  border-radius: 6px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: #333;
+}
+
+.wordButton:hover {
+  background: #e6f2ff;
+  transform: translateY(-2px);
+}
+
+.controls {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.resetButton,
+.submitButton {
+  padding: 0.75rem 2rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.resetButton {
+  background: #f0f0f0;
+  color: #333;
+}
+
+.resetButton:hover {
+  background: #e0e0e0;
+}
+
+.submitButton {
+  background: #0066cc;
+  color: white;
+}
+
+.submitButton:hover:not(:disabled) {
+  background: #0052a3;
+}
+
+.submitButton:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.result {
+  margin-top: 1rem;
+  padding: 1.5rem;
+  background: #f9f9f9;
+  border-radius: 8px;
+  border-left: 4px solid #0066cc;
+}
+
+.result h3 {
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.feedback {
+  color: #666;
+  line-height: 1.6;
+}
+
+.correct {
+  color: #2e7d32;
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.incorrect {
+  color: #d32f2f;
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.error {
+  color: #d32f2f;
+}
+

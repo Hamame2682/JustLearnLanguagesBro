@@ -1,0 +1,245 @@
+.container {
+  min-height: 100vh;
+  padding: 1rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #ddd;
+}
+
+.backLink {
+  color: #0066cc;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.header h1 {
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.content {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.section h2 {
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.description {
+  color: #666;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+.lessonInput {
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.lessonInput label {
+  font-weight: 500;
+  color: #333;
+}
+
+.lessonNumberInput {
+  padding: 0.5rem 1rem;
+  border: 2px solid #ddd;
+  border-radius: 6px;
+  font-size: 1rem;
+  width: 100px;
+}
+
+.lessonNumberInput:focus {
+  outline: none;
+  border-color: #0066cc;
+}
+
+.typeSelection {
+  margin-bottom: 1.5rem;
+}
+
+.typeLabel {
+  display: block;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.typeButtons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.typeButton {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-weight: bold;
+  border: 2px solid #e0e0e0;
+  background: white;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.typeButton:hover:not(:disabled) {
+  background: #f5f5f5;
+  transform: translateY(-2px);
+}
+
+.typeButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.typeButtonActive {
+  border-color: #0066cc;
+  background: #0066cc;
+  color: white;
+  box-shadow: 0 2px 8px rgba(0, 102, 204, 0.3);
+}
+
+.typeButtonActiveGrammar {
+  border-color: #2e7d32;
+  background: #2e7d32;
+  color: white;
+  box-shadow: 0 2px 8px rgba(46, 125, 50, 0.3);
+}
+
+.successMessage {
+  padding: 1rem;
+  background: #e8f5e9;
+  border-left: 4px solid #2e7d32;
+  border-radius: 4px;
+  color: #2e7d32;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.uploadOptions {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.cameraButton,
+.fileButton {
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.cameraButton {
+  background: #0066cc;
+  color: white;
+}
+
+.cameraButton:hover:not(:disabled) {
+  background: #0052a3;
+  transform: translateY(-2px);
+}
+
+.fileButton {
+  background: #f0f0f0;
+  color: #333;
+}
+
+.fileButton:hover:not(:disabled) {
+  background: #e0e0e0;
+  transform: translateY(-2px);
+}
+
+.cameraButton:disabled,
+.fileButton:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.loading {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+}
+
+.error {
+  padding: 1rem;
+  background: #ffebee;
+  border-left: 4px solid #d32f2f;
+  border-radius: 4px;
+  color: #d32f2f;
+  margin-bottom: 1rem;
+}
+
+.result {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background: #f9f9f9;
+  border-radius: 8px;
+}
+
+.result h3 {
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.resultContent {
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.dataSection {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: white;
+  border-radius: 6px;
+}
+
+.dataSection h4 {
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.dataSection ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.dataSection li {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #eee;
+  color: #666;
+}
+
+.dataSection li:last-child {
+  border-bottom: none;
+}
+
+.rawData {
+  background: #f5f5f5;
+  padding: 1rem;
+  border-radius: 4px;
+  overflow-x: auto;
+  font-size: 0.9rem;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
