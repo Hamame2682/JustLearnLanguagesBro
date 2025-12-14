@@ -222,61 +222,59 @@ class LoginRequest(BaseModel):
 
 @app.post("/api/auth/register")
 async def register(request: RegisterRequest):
-    """ユーザー登録"""
-    users = load_users()
+    """ユーザー登録（Supabase専用）"""
+    if not supabase:
+        raise HTTPException(status_code=500, detail="Supabaseが設定されていません")
     
-    # 既存ユーザーチェック
-    if get_user_by_student_id(request.student_id):
-        raise HTTPException(status_code=400, detail="この学生IDは既に登録されています")
+    # 1. 重複チェック (Supabaseに問い合わせ)
+    try:
+        existing = supabase.table("users").select("student_id").eq("student_id", request.student_id).execute()
+        if existing.data and len(existing.data) > 0:
+            raise HTTPException(status_code=400, detail="そのIDはもう使われとるで！")
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"⚠️ Supabase重複チェックエラー: {e}")
+        raise HTTPException(status_code=500, detail="ユーザー確認中にエラーが発生しました")
     
-    # ユーザー作成
-    # パスワードハッシュ化（空文字列の場合は空文字列を返す）
+    # 2. パスワードハッシュ化（空文字列の場合は空文字列を返す）
     password_hash = ""
     if request.password and len(request.password.strip()) > 0:
         password_hash = get_password_hash(request.password)
     
-    # 言語の検証（許可された言語のみ）
+    # 3. 言語の検証（許可された言語のみ）
     allowed_languages = ["chinese", "english", "german", "spanish"]
     language = request.language.lower() if request.language else "chinese"
     if language not in allowed_languages:
         language = "chinese"  # 無効な場合はデフォルト
     
-    is_admin = is_first_user()  # 最初のユーザーがadmin
+    # 4. 最初のユーザーかチェック（Supabaseから取得）
+    try:
+        all_users = supabase.table("users").select("student_id").execute()
+        is_admin = len(all_users.data) == 0  # 最初のユーザーがadmin
+    except Exception as e:
+        print(f"⚠️ Supabaseユーザー数取得エラー: {e}")
+        is_admin = False  # エラー時はFalse
     
+    # 5. Supabaseに保存
     new_user = {
         "student_id": request.student_id,
         "password_hash": password_hash,
         "is_admin": is_admin,
-        "language": language,  # 学習言語を追加
+        "language": language,
         "created_at": datetime.utcnow().isoformat(),
-        "webauthn_credentials": []  # WebAuthn認証情報（後で追加）
+        "webauthn_credentials": []
     }
     
-    # Supabaseに直接保存（フォールバックはsave_users）
-    if supabase:
-        try:
-            supabase.table("users").insert({
-                "student_id": request.student_id,
-                "password_hash": password_hash,
-                "is_admin": is_admin,
-                "language": language,
-                "created_at": datetime.utcnow().isoformat(),
-                "webauthn_credentials": []
-            }).execute()
-            print(f"💾 Supabaseにユーザーを登録したで！: {request.student_id}")
-        except Exception as e:
-            print(f"⚠️ Supabase登録エラー: {e}")
-            # フォールバック: JSON
-            users = load_users()
-            users.append(new_user)
-            save_users(users)
-    else:
-        # フォールバック: ローカルJSON
-        users = load_users()
-        users.append(new_user)
-        save_users(users)
+    try:
+        supabase.table("users").insert(new_user).execute()
+        print(f"💾 Supabaseにユーザーを登録したで！: {request.student_id}")
+    except Exception as e:
+        print(f"⚠️ Supabase登録エラー: {e}")
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail="Supabaseへの保存に失敗したわ...")
     
-    # アクセストークン生成
+    # 6. アクセストークン生成
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
         data={"sub": request.student_id}, expires_delta=access_token_expires
@@ -286,21 +284,34 @@ async def register(request: RegisterRequest):
         "access_token": access_token,
         "token_type": "bearer",
         "student_id": request.student_id,
-        "is_admin": new_user["is_admin"]
+        "is_admin": is_admin
     }
 
 @app.post("/api/auth/login")
 async def login(request: LoginRequest):
-    """ログイン（学生ID + パスワード）"""
-    user = get_user_by_student_id(request.student_id)
-    if not user:
-        raise HTTPException(status_code=401, detail="学生IDまたはパスワードが正しくありません")
+    """ログイン（学生ID + パスワード、Supabase専用）"""
+    if not supabase:
+        raise HTTPException(status_code=500, detail="Supabaseが設定されていません")
     
-    # パスワード検証
-    if not verify_password(request.password or "", user.get("password_hash", "")):
-        raise HTTPException(status_code=401, detail="学生IDまたはパスワードが正しくありません")
+    # 1. Supabaseからユーザーを探す
+    try:
+        response = supabase.table("users").select("*").eq("student_id", request.student_id).execute()
+        if not response.data or len(response.data) == 0:
+            raise HTTPException(status_code=401, detail="そんなユーザーおらんで")
+        
+        user_data = response.data[0]  # リストの1番目を取得
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"⚠️ Supabaseログイン検索エラー: {e}")
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail="ユーザー検索中にエラーが発生しました")
     
-    # アクセストークン生成
+    # 2. パスワード確認
+    if not verify_password(request.password or "", user_data.get("password_hash", "")):
+        raise HTTPException(status_code=401, detail="パスワードちゃうで")
+    
+    # 3. トークン発行
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
         data={"sub": request.student_id}, expires_delta=access_token_expires
@@ -310,7 +321,7 @@ async def login(request: LoginRequest):
         "access_token": access_token,
         "token_type": "bearer",
         "student_id": request.student_id,
-        "is_admin": user.get("is_admin", False)
+        "is_admin": user_data.get("is_admin", False)
     }
 
 @app.get("/api/auth/me")
