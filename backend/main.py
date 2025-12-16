@@ -984,15 +984,20 @@ def get_words(
     保存された単語データを取得（Supabase優先、フォールバックはJSON）
     lessonパラメータが指定されれば、そのレッスンの単語のみを返す
     """
+    print(f"📖 単語データ取得開始: User={current_user}, Lesson={lesson}", flush=True)
+    
     if supabase:
         try:
             query = supabase.table("words").select("*").eq("user_id", current_user)
             if lesson is not None:
                 query = query.eq("lesson", lesson)
             response = query.execute()
-            return response.data if response.data else []
+            data = response.data if response.data else []
+            print(f"✅ Supabaseから {len(data)}個の単語を取得", flush=True)
+            return data
         except Exception as e:
-            print(f"⚠️ Supabase読み込みエラー: {e}")
+            print(f"⚠️ Supabase読み込みエラー: {e}", flush=True)
+            traceback.print_exc()
             # フォールバック: JSON
             pass
     
@@ -1027,15 +1032,20 @@ def get_grammar(
     保存された文法データを取得（Supabase優先、フォールバックはJSON）
     lessonパラメータが指定されれば、そのレッスンの文法のみを返す
     """
+    print(f"📖 文法データ取得開始: User={current_user}, Lesson={lesson}", flush=True)
+    
     if supabase:
         try:
             query = supabase.table("grammar").select("*").eq("user_id", current_user)
             if lesson is not None:
                 query = query.eq("lesson", lesson)
             response = query.execute()
-            return response.data if response.data else []
+            data = response.data if response.data else []
+            print(f"✅ Supabaseから {len(data)}個の文法を取得", flush=True)
+            return data
         except Exception as e:
-            print(f"⚠️ Supabase読み込みエラー: {e}")
+            print(f"⚠️ Supabase読み込みエラー: {e}", flush=True)
+            traceback.print_exc()
             # フォールバック: JSON
             pass
     
@@ -1066,6 +1076,7 @@ def get_lessons(current_user: str = Depends(get_current_user)):  # 認証必須
     """
     アップロードされたレッスン番号のリストを取得（Supabase優先、フォールバックはJSON）
     """
+    print(f"📚 レッスン番号取得開始: User={current_user}", flush=True)
     lessons = set()
     
     if supabase:
@@ -1084,9 +1095,12 @@ def get_lessons(current_user: str = Depends(get_current_user)):  # 認証必須
                     if "lesson" in grammar:
                         lessons.add(grammar["lesson"])
             
-            return sorted(list(lessons))
+            result = sorted(list(lessons))
+            print(f"✅ レッスン番号取得完了: {result}", flush=True)
+            return result
         except Exception as e:
-            print(f"⚠️ Supabase読み込みエラー: {e}")
+            print(f"⚠️ Supabase読み込みエラー: {e}", flush=True)
+            traceback.print_exc()
             # フォールバック: JSON
             pass
     

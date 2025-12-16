@@ -67,7 +67,15 @@ export default function LearnPage() {
         const res = await fetch(`${apiUrl}/api/lessons`, {
           headers: getAuthHeaders()
         });
+        
+        if (!res.ok) {
+          const errorText = await res.text();
+          console.error('レッスン番号の取得に失敗:', errorText);
+          return;
+        }
+        
         const data = await res.json();
+        console.log('📚 取得したレッスン番号:', data);
         setAvailableLessons(data);
       } catch (e) {
         console.error('レッスン番号の取得に失敗:', e);
@@ -112,7 +120,21 @@ export default function LearnPage() {
       const res = await fetch(`${apiUrl}${endpoint}?lesson=${lesson}`, {
         headers: getAuthHeaders()
       });
+      
+      if (!res.ok) {
+        const errorText = await res.text();
+        let errorMessage = 'データの取得に失敗しました';
+        try {
+          const errorData = JSON.parse(errorText);
+          errorMessage = errorData.detail || errorData.message || errorMessage;
+        } catch {
+          errorMessage = errorText || errorMessage;
+        }
+        throw new Error(errorMessage);
+      }
+      
       const data = await res.json();
+      console.log(`📖 取得したデータ: ${data.length}個`, data);
 
       if (data.length > 0) {
         if (currentMode === 'reorder') {
@@ -178,9 +200,10 @@ export default function LearnPage() {
       } else {
         alert(`${currentMode === 'reorder' ? '文法' : '単語'}データが見つからんかったわ... アップロードした？`);
       }
-    } catch (e) {
-      console.error(e);
-      alert("通信エラーや！PC動いてる？");
+    } catch (error: any) {
+      console.error("エラー:", error);
+      const errorMessage = error?.message || 'データの読み込みに失敗しました';
+      alert(`エラー: ${errorMessage}`);
     } finally {
       setLoading(false);
     }
