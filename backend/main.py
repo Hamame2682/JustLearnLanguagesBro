@@ -120,9 +120,12 @@ def load_users():
     if supabase:
         try:
             response = supabase.table("users").select("*").execute()
-            return response.data if response.data else []
+            data = response.data if response.data else []
+            print(f"✅ Supabaseから {len(data)}人のユーザーを取得", flush=True)
+            return data
         except Exception as e:
-            print(f"⚠️ Supabase読み込みエラー: {e}")
+            print(f"⚠️ Supabase読み込みエラー: {e}", flush=True)
+            traceback.print_exc()
             # フォールバック: JSON
             pass
     
@@ -180,10 +183,13 @@ def get_user_by_student_id(student_id: str):
         try:
             response = supabase.table("users").select("*").eq("student_id", student_id).execute()
             if response.data and len(response.data) > 0:
+                print(f"✅ ユーザー検索成功: {student_id}", flush=True)
                 return response.data[0]
+            print(f"⚠️ ユーザーが見つかりません: {student_id}", flush=True)
             return None
         except Exception as e:
-            print(f"⚠️ Supabase検索エラー: {e}")
+            print(f"⚠️ Supabase検索エラー: {e}", flush=True)
+            traceback.print_exc()
             # フォールバック: JSON
             pass
     
@@ -351,6 +357,7 @@ def get_current_admin(current_user: str = Depends(get_current_user)):
 @app.get("/api/admin/users")
 async def get_all_users(admin_user: str = Depends(get_current_admin)):
     """全ユーザー一覧を取得（管理者のみ）"""
+    print(f"👥 ユーザー一覧取得開始: Admin={admin_user}", flush=True)
     users = load_users()
     # パスワードハッシュは返さない
     user_list = []
@@ -361,6 +368,7 @@ async def get_all_users(admin_user: str = Depends(get_current_admin)):
             "language": user.get("language", "chinese"),
             "created_at": user.get("created_at", "")
         })
+    print(f"✅ {len(user_list)}人のユーザーを返却", flush=True)
     return {"users": user_list}
 
 class UpdateUserRequest(BaseModel):
