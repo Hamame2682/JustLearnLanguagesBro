@@ -9,6 +9,7 @@ import json
 import asyncio
 import traceback  # ← これがエラー追跡のキモや
 import sys  # 標準エラー出力用
+import warnings  # 警告を制御するため
 from typing import Optional
 from pydantic import BaseModel
 from PIL import Image
@@ -18,6 +19,9 @@ from jose import JWTError, jwt
 from passlib.context import CryptContext
 import secrets
 from supabase import create_client, Client
+
+# FutureWarningを抑制（Supabaseライブラリなどからの警告を無視）
+warnings.filterwarnings("ignore", category=FutureWarning)
 
 load_dotenv()
 
