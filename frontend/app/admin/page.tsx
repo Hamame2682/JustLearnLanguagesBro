@@ -57,37 +57,50 @@ export default function AdminPage() {
       const apiUrl = getApiUrl();
       const headers = getAuthHeadersForFormData(); // FormData用のヘッダーを使用
       
-      const response = await fetch(`${apiUrl}/api/upload-textbook`, {
-        method: 'POST',
-        headers: headers, // 認証ヘッダーのみ（Content-Typeは自動設定）
-        body: formData, // Content-Typeは自動で設定されるので、手動で設定しない！
-      });
-
-      if (!response.ok) {
-        // エラーレスポンスの詳細を取得
-        const errorText = await response.text();
-        let errorMessage = 'アップロードに失敗しました';
-        try {
-          const errorData = JSON.parse(errorText);
-          errorMessage = errorData.detail || errorData.message || errorMessage;
-        } catch {
-          errorMessage = errorText || errorMessage;
-        }
-        throw new Error(errorMessage);
-      }
-
-      const data = await response.json();
-      setResult(data);
+      // タイムアウト設定（120秒 = 2分）
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 120000); // 120秒
       
-      // 成功メッセージを表示
-      if (data.status === 'success') {
-        setError(null);
+      try {
+        const response = await fetch(`${apiUrl}/api/upload-textbook`, {
+          method: 'POST',
+          headers: headers, // 認証ヘッダーのみ（Content-Typeは自動設定）
+          body: formData, // Content-Typeは自動で設定されるので、手動で設定しない！
+          signal: controller.signal, // タイムアウト用
+        });
+        
+        clearTimeout(timeoutId); // 成功したらタイムアウトをクリア
+
+        if (!response.ok) {
+          // エラーレスポンスの詳細を取得
+          const errorText = await response.text();
+          let errorMessage = 'アップロードに失敗しました';
+          try {
+            const errorData = JSON.parse(errorText);
+            errorMessage = errorData.detail || errorData.message || errorMessage;
+          } catch {
+            errorMessage = errorText || errorMessage;
+          }
+          throw new Error(errorMessage);
+        }
+
+        const data = await response.json();
+        setResult(data);
+        
+        // 成功メッセージを表示
+        if (data.status === 'success') {
+          setError(null);
+        }
+      } catch (err: any) {
+        clearTimeout(timeoutId); // エラー時もタイムアウトをクリア
+        if (err.name === 'AbortError') {
+          setError('アップロードがタイムアウトしました。画像が大きすぎる可能性があります。もう一度お試しください。');
+        } else {
+          setError(err.message || 'エラーが発生しました');
+        }
+      } finally {
+        setUploading(false);
       }
-    } catch (err: any) {
-      setError(err.message || 'エラーが発生しました');
-    } finally {
-      setUploading(false);
-    }
   };
 
   return (

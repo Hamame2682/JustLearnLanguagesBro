@@ -855,7 +855,7 @@ async def upload_textbook(
         if vision_model is None:
             raise Exception("Geminiモデルが初期化されてへん！APIキーを確認してくれ！")
 
-        # 2. 画像の読み込み
+        # 2. 画像の読み込みとリサイズ（大きすぎる画像は処理が遅いため）
         print("📷 画像を読み込み中...", flush=True)
         contents = await file.read()
         if not contents:
@@ -863,7 +863,15 @@ async def upload_textbook(
         
         try:
             image = Image.open(io.BytesIO(contents))
-            print(f"✅ 画像読み込み成功: {image.format}, サイズ: {image.size}", flush=True)
+            original_size = image.size
+            print(f"✅ 画像読み込み成功: {image.format}, サイズ: {original_size}", flush=True)
+            
+            # 画像が大きすぎる場合はリサイズ（最大1920x1080）
+            max_width, max_height = 1920, 1080
+            if image.size[0] > max_width or image.size[1] > max_height:
+                print(f"📐 画像をリサイズ中: {original_size} -> ", end="", flush=True)
+                image.thumbnail((max_width, max_height), Image.Resampling.LANCZOS)
+                print(f"{image.size}", flush=True)
         except Exception as img_error:
             raise Exception(f"画像の読み込みに失敗: {str(img_error)}")
 
@@ -890,10 +898,24 @@ async def upload_textbook(
         
         print(f"🤖 Gemini ({type}) に解析依頼中...", flush=True)
         try:
-            response = vision_model.generate_content([prompt, image])
-            print("✅ Geminiから応答あり", flush=True)
+            # タイムアウト設定（60秒）
+            async def call_gemini():
+                # 同期的なAPI呼び出しを非同期で実行
+                loop = asyncio.get_event_loop()
+                return await loop.run_in_executor(
+                    None, 
+                    lambda: vision_model.generate_content([prompt, image])
+                )
+            
+            try:
+                response = await asyncio.wait_for(call_gemini(), timeout=60.0)
+                print("✅ Geminiから応答あり", flush=True)
+            except asyncio.TimeoutError:
+                raise Exception("Gemini APIの呼び出しがタイムアウトしました（60秒）。画像が大きすぎる可能性があります。")
         except Exception as gemini_error:
-            raise Exception(f"Gemini API呼び出しエラー: {str(gemini_error)}")
+            error_msg = str(gemini_error)
+            print(f"❌ Gemini APIエラー: {error_msg}", flush=True)
+            raise Exception(f"Gemini API呼び出しエラー: {error_msg}")
         
         # 4. レスポンスの確認
         if not hasattr(response, 'text') or not response.text:
