@@ -2,7 +2,7 @@
 
 import { useState, useRef } from 'react';
 import Link from 'next/link';
-import { getApiUrl, getAuthHeaders } from '@/lib/api';
+import { getApiUrl, getAuthHeadersForFormData } from '@/lib/api';
 import { useAuth } from '@/contexts/AuthContext';
 import styles from './page.module.css';
 
@@ -55,16 +55,25 @@ export default function AdminPage() {
       formData.append('type', uploadType);
 
       const apiUrl = getApiUrl();
-      const headers = getAuthHeaders();
+      const headers = getAuthHeadersForFormData(); // FormData用のヘッダーを使用
       
       const response = await fetch(`${apiUrl}/api/upload-textbook`, {
         method: 'POST',
-        headers: headers, // 認証ヘッダーを追加
+        headers: headers, // 認証ヘッダーのみ（Content-Typeは自動設定）
         body: formData, // Content-Typeは自動で設定されるので、手動で設定しない！
       });
 
       if (!response.ok) {
-        throw new Error('アップロードに失敗しました');
+        // エラーレスポンスの詳細を取得
+        const errorText = await response.text();
+        let errorMessage = 'アップロードに失敗しました';
+        try {
+          const errorData = JSON.parse(errorText);
+          errorMessage = errorData.detail || errorData.message || errorMessage;
+        } catch {
+          errorMessage = errorText || errorMessage;
+        }
+        throw new Error(errorMessage);
       }
 
       const data = await response.json();

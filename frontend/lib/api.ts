@@ -11,12 +11,22 @@ export function getAuthToken(): string | null {
   return null;
 }
 
-// 認証ヘッダーを取得
+// 認証ヘッダーを取得（JSON用）
 export function getAuthHeaders(): HeadersInit {
   const token = getAuthToken();
   const headers: HeadersInit = {
     'Content-Type': 'application/json',
   };
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+  return headers;
+}
+
+// 認証ヘッダーを取得（FormData用 - Content-Typeは設定しない）
+export function getAuthHeadersForFormData(): HeadersInit {
+  const token = getAuthToken();
+  const headers: HeadersInit = {};
   if (token) {
     headers['Authorization'] = `Bearer ${token}`;
   }
